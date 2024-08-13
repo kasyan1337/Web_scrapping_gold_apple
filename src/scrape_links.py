@@ -1,13 +1,13 @@
-import re
-import time
 import json
 import os
+import time
 
-from playwright.sync_api import Playwright, sync_playwright, expect
 from bs4 import BeautifulSoup
-
+from playwright.sync_api import Playwright, sync_playwright
 
 categories = [
+    'back-to-school',
+    'tovary-dlja-doma-do-40',
     "lajm",
     "teens",
     "novye-brendy",
@@ -33,7 +33,7 @@ categories = [
 ]
 
 
-def append_href_to_json(page, filename="href_links.json"):
+def append_href_to_json(page, filename="data/product_links/href_links.json"):
     html_content = page.content()  # Get the HTML content of the page
     soup = BeautifulSoup(html_content, 'html.parser')  # Parse the HTML with BeautifulSoup
 
@@ -75,8 +75,7 @@ def run(playwright: Playwright) -> None:
     page.keyboard.press("Escape")
     page.goto("https://goldapple.ru/tovary-dlja-zhivotnyh")
 
-
-    for x in range(1, 50):
+    for x in range(1, 5000):
         if page.locator(".lKfCK > button").first.click():
             page.locator(".lKfCK > button").first.click()
             print("Clicked")
@@ -86,8 +85,6 @@ def run(playwright: Playwright) -> None:
 
         # Append the HTML content to the JSON file after each iteration
         append_href_to_json(page)
-
-    # page.inner_html('')
 
     # ---------------------
     context.close()
