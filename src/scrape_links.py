@@ -5,86 +5,68 @@ import time
 from bs4 import BeautifulSoup
 from playwright.sync_api import Playwright, sync_playwright
 
-categories = [
-    'back-to-school',
-    'tovary-dlja-doma-do-40',
-    "lajm",
-    "teens",
-    "novye-brendy",
-    "videokonsul-tacija",
-    "makijazh",
-    "uhod",
-    "volosy",
-    "parfjumerija",
-    "aptechnaja-kosmetika",
-    "sexual-wellness",
-    "azija",
-    "organika",
-    "dlja-muzhchin",
-    "detjam",
-    "tehnika",
-    "dlja-doma",
-    "uborki-i-gigiena",
-    "odezhda-i-aksessuary",
-    "figura-mechty",
-    "ukrashenija",
-    "mini-formaty",
-    "tovary-dlja-zhivotnyh",
-]
 
-
-def append_href_to_json(page, filename="data/product_links/href_links.json"):
+def append_href_to_json(page, href_set):
     html_content = page.content()  # Get the HTML content of the page
     soup = BeautifulSoup(html_content, 'html.parser')  # Parse the HTML with BeautifulSoup
 
     # Extract all <article> tags with a class
     articles = soup.find_all('article', class_=True)
 
-    # Initialize a list to hold the hrefs found in this iteration
-    hrefs = []
-
     # Loop through each article and extract the href of the first <a> tag
     for article in articles:
         a_tag = article.find('a', href=True)  # Find the first <a> tag with an href within the article
         if a_tag and a_tag['href']:
-            hrefs.append(a_tag['href'])  # Add only the href value to the list
+            href_set.add(a_tag['href'])  # Add only the href value to the set
 
-    # Check if the file exists
-    if os.path.exists(filename):
-        # Read the existing data
-        with open(filename, "r", encoding="utf-8") as f:
-            data = json.load(f)
-    else:
-        data = {"hrefs": []}  # Initialize with an empty list if the file does not exist
+    print(f"Unique hrefs collected so far: {len(href_set)}")
 
-    # Append the new hrefs
-    data["hrefs"].extend(hrefs)
 
-    # Save the updated data back to the JSON file
+def save_hrefs_to_json(href_set, filename="data/product_links/href_links.json"):
+    data = {"hrefs": list(href_set)}  # Convert set to list for saving
+
+    # Save the unique hrefs to the JSON file
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
-    print(f"Href links appended to {filename}")
+    print(f"All unique href links saved to {filename}")
 
 
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
+    context = browser.new_context(permissions=[])
+
+    # Route to abort requests for images
+    context.route("**/*",
+                  lambda route, request: route.abort() if request.resource_type == "image" else route.continue_())
+
     page = context.new_page()
-    page.goto("https://goldapple.ru/")
+    page.goto("https://goldapple.ru/parfjumerija")
     page.get_by_role("button", name="Да, верно").click()
     page.keyboard.press("Escape")
-    page.goto("https://goldapple.ru/tovary-dlja-zhivotnyh")
+    page.goto("https://goldapple.ru/tovary-dlja-zhivotnyh")  # test page
+    # page.goto("https://goldapple.ru/parfjumerija")
 
-    for x in range(1, 5000):
-        if page.locator(".lKfCK > button").first.click():
-            page.locator(".lKfCK > button").first.click()
-            print("Clicked")
-        page.keyboard.press("End")
-        print(f"Scrolling... (Scroll count: {x})")
-        time.sleep(1)
+    href_set = set()  # Initialize an empty set to store unique hrefs
 
-        # Append the HTML content to the JSON file after each iteration
-        append_href_to_json(page)
+    try:
+        for x in range(1, 1000):
+            if page.locator(".lKfCK > button").first.click():
+                page.locator(".lKfCK > button").first.click()
+                print("Clicked")
+            page.keyboard.press("End")
+            print(f"Scrolling... (Scroll count: {x})")
+            time.sleep(1)
+
+            # Append the unique hrefs to the set after each iteration
+            append_href_to_json(page, href_set)
+
+    except Exception as e:
+        print(e)
+
+    finally:
+        # Save all unique hrefs to a single JSON file, regardless of success or failure
+        save_hrefs_to_json(href_set)
 
     # ---------------------
     context.close()
