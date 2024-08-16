@@ -68,13 +68,3 @@ class CSVFileMerger:
         self.validate(merged_data)
         self.write_merged_file(merged_data)
         print(f"Merged file created at: {self.output_path}")
-
-
-if __name__ == "__main__":
-    data_folder = '../data'
-    part1_file = os.path.join(data_folder, "PART_1.csv")
-    part2_file = os.path.join(data_folder, "PART_2.csv")
-    output_file = os.path.join(data_folder, "Goldapple_parfyumeriya.csv")
-
-    merger = CSVFileMerger(part1_file, part2_file, output_file)
-    merger.execute()

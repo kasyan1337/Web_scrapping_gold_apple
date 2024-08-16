@@ -69,12 +69,3 @@ class ProductScraper_part_2:
             print(f"Data successfully written for {index}/{self.total_urls} - {url}")
         self.write_output(all_data)
         print(f"All data successfully written to {self.output_file_path}")
-
-
-# Usage
-data_folder = '../data'
-input_file_path = os.path.join(data_folder, 'PART_1.csv')
-output_file_path = os.path.join(data_folder, 'PART_2.csv')
-
-scraper = ProductScraper_part_2(input_file_path, output_file_path)
-scraper.run()
