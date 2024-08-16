@@ -44,7 +44,7 @@ def main():
 
     # Ask user if they want to continue to the second part
     continue_part_2 = input("Do you want to continue to Part 2? (y/n): ")
-    if continue_part_2.lower() != 'y' or continue_part_2.lower() != 'Y':
+    if continue_part_2.lower() != 'y':
         print("Exiting the program.")
         return
 
