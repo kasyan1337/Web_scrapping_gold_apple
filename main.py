@@ -2,6 +2,7 @@ from src.scrape_part_1 import ProductScraper_part_1
 from src.scrape_part_2 import ProductScraper_part_2
 from src.CSVFileMerger import CSVFileMerger
 import os
+import bs4
 
 def main():
     # Base URL parts
@@ -64,4 +65,6 @@ def main():
 
     print("All parts completed successfully.")
 
+if __name__ == "__main__":
+    main()
 
