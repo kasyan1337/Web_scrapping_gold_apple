@@ -8,8 +8,6 @@
 
 ```
 ├── README.md
-├── __pycache__
-│   └── 1637.cpython-312-pytest-8.2.1.pyc
 ├── data
 │   ├── Goldapple_parfyumeriya.csv
 │   ├── PART_1.csv
@@ -20,19 +18,10 @@
 ├── src
 │   ├── CSVFileMerger.py
 │   ├── __init__.py
-│   ├── __pycache__
-│   │   ├── CSVFileMerger.cpython-312.pyc
-│   │   ├── __init__.cpython-312.pyc
-│   │   ├── scrape_part_1.cpython-312.pyc
-│   │   └── scrape_part_2.cpython-312.pyc
 │   ├── scrape_part_1.py
 │   └── scrape_part_2.py
-├── test.py
 └── tests
     ├── __init__.py
-    ├── __pycache__
-    │   ├── __init__.cpython-312.pyc
-    │   └── test_scrape_part_1.cpython-312-pytest-8.2.1.pyc
     ├── test_CSVFileMerger.py
     ├── test_scrape_part_1.py
     └── test_scrape_part_2.py
@@ -66,8 +55,7 @@
 Сначала клонируйте репозиторий на локальный компьютер:
 
 ```bash
-git clone <URL-вашего-репозитория>
-cd <имя-репозитория>
+git clone https://github.com/kasyan1337/Web_scrapping_gold_apple
 ```
 
 ### Шаг 2: Создание и активация виртуального окружения
