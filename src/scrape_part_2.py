@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 
+
 class ProductScraper_part_2:
     """
     A class to scrape detailed product information from individual product pages and save the results to a CSV file.
@@ -25,9 +26,11 @@ class ProductScraper_part_2:
         """
         Load URLs from the input CSV file.
         """
-        with open(self.input_file_path, mode='r', encoding='utf-8') as input_file:
+        with open(self.input_file_path, mode="r", encoding="utf-8") as input_file:
             reader = csv.reader(input_file)
-            self.urls = [row[0] for row in reader][1:]  # Skip the header and get all URLs
+            self.urls = [row[0] for row in reader][
+                1:
+            ]  # Skip the header and get all URLs
             self.total_urls = len(self.urls)
 
     def scrape_data(self, url, retries=10, delay=1):
@@ -47,23 +50,34 @@ class ProductScraper_part_2:
                 response = requests.get(url)
                 response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
 
-                soup = BeautifulSoup(response.text, 'html.parser')
+                soup = BeautifulSoup(response.text, "html.parser")
 
                 # Find the description (Description)
-                description_div = soup.find('div', itemprop="description")
-                description_text = description_div.get_text(strip=True) if description_div else "None"
+                description_div = soup.find("div", itemprop="description")
+                description_text = (
+                    description_div.get_text(strip=True) if description_div else "None"
+                )
 
                 # Find the Text_1 (Usage/Применение)
-                text_1_div = soup.find('div', value="Text_1")
+                text_1_div = soup.find("div", value="Text_1")
                 text_1_text = text_1_div.get_text(strip=True) if text_1_div else "None"
 
                 # Find the Text_4 (Additional Information/Дополнительная информация)
                 text_4_div = None
-                keywords = ['страна', 'производитель', 'изготовитель', 'происхождение', 'адрес']
+                keywords = [
+                    "страна",
+                    "производитель",
+                    "изготовитель",
+                    "происхождение",
+                    "адрес",
+                ]
 
                 for value in ["Text_4", "Text_3", "Text_2"]:
-                    div = soup.find('div', value=value)
-                    if div and any(keyword in div.get_text(strip=True).lower() for keyword in keywords):
+                    div = soup.find("div", value=value)
+                    if div and any(
+                        keyword in div.get_text(strip=True).lower()
+                        for keyword in keywords
+                    ):
                         text_4_div = div
                         break
 
@@ -77,8 +91,15 @@ class ProductScraper_part_2:
                     print(f"Retrying in {delay} second...")
                     time.sleep(delay)
                 else:
-                    print(f"Failed to retrieve the webpage at {url} after {retries} attempts.")
-                    return [url, "Failed to retrieve", "Failed to retrieve", "Failed to retrieve"]
+                    print(
+                        f"Failed to retrieve the webpage at {url} after {retries} attempts."
+                    )
+                    return [
+                        url,
+                        "Failed to retrieve",
+                        "Failed to retrieve",
+                        "Failed to retrieve",
+                    ]
 
     def write_output(self, data):
         """
@@ -87,10 +108,18 @@ class ProductScraper_part_2:
         Parameters:
         data (list): A list of lists, where each sublist contains data for one product.
         """
-        with open(self.output_file_path, mode='w', newline='', encoding='utf-8') as output_file:
+        with open(
+            self.output_file_path, mode="w", newline="", encoding="utf-8"
+        ) as output_file:
             writer = csv.writer(output_file)
             writer.writerow(
-                ["Product URL", "Description", "Usage", "Additional information - Manufacturer"])
+                [
+                    "Product URL",
+                    "Description",
+                    "Usage",
+                    "Additional information - Manufacturer",
+                ]
+            )
             writer.writerows(data)
 
     def run(self):

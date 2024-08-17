@@ -30,19 +30,21 @@ class CSVFileMerger:
         The second CSV file is read and stored as a dictionary, where the key is 'Product URL'.
         """
         # Read PART_1_test.csv
-        with open(self.part1_path, mode='r', encoding='utf-8') as file1:
+        with open(self.part1_path, mode="r", encoding="utf-8") as file1:
             reader = csv.DictReader(file1)
             self.part1_data = list(reader)
 
         # Read PART_2_test.csv
-        with open(self.part2_path, mode='r', encoding='utf-8') as file2:
+        with open(self.part2_path, mode="r", encoding="utf-8") as file2:
             reader = csv.DictReader(file2)
             for row in reader:
-                product_url = row['Product URL']
+                product_url = row["Product URL"]
                 self.part2_data[product_url] = {
-                    'Description': row['Description'],
-                    'Usage': row['Usage'],
-                    'Additional information - Manufacturer': row['Additional information - Manufacturer']
+                    "Description": row["Description"],
+                    "Usage": row["Usage"],
+                    "Additional information - Manufacturer": row[
+                        "Additional information - Manufacturer"
+                    ],
                 }
 
     def merge_files(self):
@@ -60,16 +62,18 @@ class CSVFileMerger:
         """
         merged_data = []
         for row in self.part1_data:
-            product_url = row['Product URL']
+            product_url = row["Product URL"]
             if product_url in self.part2_data:
                 row.update(self.part2_data[product_url])
             else:
                 # If the product URL is missing in part 2, add empty fields for part 2 data
-                row.update({
-                    'Description': '',
-                    'Usage': '',
-                    'Additional information - Manufacturer': ''
-                })
+                row.update(
+                    {
+                        "Description": "",
+                        "Usage": "",
+                        "Additional information - Manufacturer": "",
+                    }
+                )
             merged_data.append(row)
         return merged_data
 
@@ -85,7 +89,9 @@ class CSVFileMerger:
             return
 
         # Write the merged data to the output CSV
-        with open(self.output_path, mode='w', newline='', encoding='utf-8') as output_file:
+        with open(
+            self.output_path, mode="w", newline="", encoding="utf-8"
+        ) as output_file:
             fieldnames = list(merged_data[0].keys())
             writer = csv.DictWriter(output_file, fieldnames=fieldnames)
             writer.writeheader()
@@ -101,7 +107,7 @@ class CSVFileMerger:
         merged_data (list): A list of dictionaries representing the merged CSV data.
         """
         for row in merged_data:
-            product_url = row['Product URL']
+            product_url = row["Product URL"]
             if product_url not in self.part2_data:
                 print(f"Warning: {product_url} not found in PART_2_test.csv")
 

@@ -1,12 +1,11 @@
-import os
+import pytest
 
-from src.CSVFileMerger import CSVFileMerger
 from src.scrape_part_1 import ProductScraper_part_1
-from src.scrape_part_2 import ProductScraper_part_2
 
 
-def main():
-    # Base URL parts
+@pytest.fixture
+def setup_test_environment():
+    """Setup test environment with necessary files and directories."""
     base_url = "https://goldapple.ru/front/api/catalog/products"
     query_params = {
         "categoryId": "1000000007",
@@ -37,37 +36,18 @@ def main():
     }
 
     # FIRST PART
-    data_dir = "./data"
-    part1_filename = "PART_1.csv"
-
-    scraper1 = ProductScraper_part_1(
+    data_dir = "./mock_data"
+    part1_filename = "part_1_test_output.csv"
+    return ProductScraper_part_1(
         base_url, query_params, headers, data_dir, part1_filename
     )
-    scraper1.scrape()
-
-    # Ask user if they want to continue to the second part
-    continue_part_2 = input("Do you want to continue to Part 2? (y/n): ")
-    if continue_part_2.lower() != "y":
-        print("Exiting the program.")
-        return
-
-    # SECOND PART
-    part1_file_path = os.path.join(data_dir, "PART_1.csv")
-    part2_file_path = os.path.join(data_dir, "PART_2.csv")
-
-    scraper2 = ProductScraper_part_2(part1_file_path, part2_file_path)
-    scraper2.run()
-
-    # Merge the CSV files
-    part1_file = os.path.join(data_dir, "PART_1.csv")
-    part2_file = os.path.join(data_dir, "PART_2.csv")
-    merged_output_file = os.path.join(data_dir, "Goldapple_parfyumeriya.csv")
-
-    merger = CSVFileMerger(part1_file, part2_file, merged_output_file)
-    merger.execute()
-
-    print("All parts completed successfully.")
 
 
-if __name__ == "__main__":
-    main()
+def test_fetch_page(setup_test_environment):
+    base_url, query_params, headers, data_dir, part1_filename = setup_test_environment
+    scraper = ProductScraper_part_1(
+        base_url, query_params, headers, data_dir, part1_filename
+    )
+
+    products = scraper.fetch_page(1)
+    assert isinstance(products, list)

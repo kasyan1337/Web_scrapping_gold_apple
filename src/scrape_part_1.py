@@ -26,7 +26,7 @@ class ProductScraper_part_1:
         self.headers = headers
         self.output_dir = output_dir
         self.output_file_path = os.path.join(self.output_dir, output_file_name)
-        self.fieldnames = ['Product URL', 'Product Name', 'Price (RUB)', 'Rating']
+        self.fieldnames = ["Product URL", "Product Name", "Price (RUB)", "Rating"]
         self.seen_item_ids = set()
 
         # Ensure the output directory exists
@@ -49,7 +49,7 @@ class ProductScraper_part_1:
         response = requests.get(full_url, headers=self.headers)
         response.raise_for_status()  # Raise an HTTPError for bad responses
 
-        return response.json().get('data', {}).get('products', [])
+        return response.json().get("data", {}).get("products", [])
 
     def process_product(self, product):
         """
@@ -62,26 +62,26 @@ class ProductScraper_part_1:
         dict or None: A dictionary containing the product's URL, name, price, and rating,
                       or None if the product has already been processed.
         """
-        item_id = product.get('itemId')
+        item_id = product.get("itemId")
         if item_id in self.seen_item_ids:
             return None
 
         self.seen_item_ids.add(item_id)
 
-        product_url = product.get('url', '')
+        product_url = product.get("url", "")
         full_url = f"https://goldapple.ru{product_url}"
-        brand = product.get('brand', '').strip()
-        name = product.get('name', '').strip()
+        brand = product.get("brand", "").strip()
+        name = product.get("name", "").strip()
         full_name = f"{brand}: {name}"
 
-        price = product.get('price', {}).get('actual', {}).get('amount')
-        rating = product.get('reviews', {}).get('rating', None)
+        price = product.get("price", {}).get("actual", {}).get("amount")
+        rating = product.get("reviews", {}).get("rating", None)
 
         return {
-            'Product URL': full_url,
-            'Product Name': full_name,
-            'Price (RUB)': price,
-            'Rating': rating if rating is not None else 'None'
+            "Product URL": full_url,
+            "Product Name": full_name,
+            "Price (RUB)": price,
+            "Rating": rating if rating is not None else "None",
         }
 
     def save_to_csv(self, products_data):
@@ -91,7 +91,9 @@ class ProductScraper_part_1:
         Parameters:
         products_data (list): A list of dictionaries representing the product data.
         """
-        with open(self.output_file_path, mode='w', newline='', encoding='utf-8') as csv_file:
+        with open(
+            self.output_file_path, mode="w", newline="", encoding="utf-8"
+        ) as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=self.fieldnames)
             writer.writeheader()
             for product_data in products_data:
