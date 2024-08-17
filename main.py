@@ -1,8 +1,9 @@
+import os
+
+from src.CSVFileMerger import CSVFileMerger
 from src.scrape_part_1 import ProductScraper_part_1
 from src.scrape_part_2 import ProductScraper_part_2
-from src.CSVFileMerger import CSVFileMerger
-import os
-import bs4
+
 
 def main():
     # Base URL parts
@@ -39,8 +40,8 @@ def main():
     data_dir = './data'
     part1_filename = 'PART_1.csv'
 
-    scraper1 = ProductScraper_part_1(base_url, query_params, headers, data_dir, part1_filename)
-    scraper1.scrape()
+    # scraper1 = ProductScraper_part_1(base_url, query_params, headers, data_dir, part1_filename)
+    # scraper1.scrape()
 
     # Ask user if they want to continue to the second part
     continue_part_2 = input("Do you want to continue to Part 2? (y/n): ")
@@ -65,6 +66,6 @@ def main():
 
     print("All parts completed successfully.")
 
+
 if __name__ == "__main__":
     main()
-

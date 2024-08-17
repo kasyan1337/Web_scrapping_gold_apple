@@ -1,9 +1,7 @@
-import csv
-import os
-
+import time
 import requests
 from bs4 import BeautifulSoup
-
+import csv
 
 class ProductScraper_part_2:
     def __init__(self, input_file_path, output_file_path):
@@ -19,37 +17,45 @@ class ProductScraper_part_2:
             self.urls = [row[0] for row in reader][1:]  # Skip the header and get all URLs
             self.total_urls = len(self.urls)
 
-    def scrape_data(self, url):
-        """Scrape the necessary data from a single product page."""
-        response = requests.get(url)
+    def scrape_data(self, url, retries=10, delay=1):
+        """Scrape the necessary data from a single product page, with retry logic."""
+        for attempt in range(retries):
+            try:
+                response = requests.get(url)
+                response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
 
-        if response.status_code == 200:
-            soup = BeautifulSoup(response.text, 'html.parser')
+                soup = BeautifulSoup(response.text, 'html.parser')
 
-            # Find the description (Description)
-            description_div = soup.find('div', itemprop="description")
-            description_text = description_div.get_text(strip=True) if description_div else "None"
+                # Find the description (Description)
+                description_div = soup.find('div', itemprop="description")
+                description_text = description_div.get_text(strip=True) if description_div else "None"
 
-            # Find the Text_1 (Usage/Применение)
-            text_1_div = soup.find('div', value="Text_1", )
-            text_1_text = text_1_div.get_text(strip=True) if text_1_div else "None"
+                # Find the Text_1 (Usage/Применение)
+                text_1_div = soup.find('div', value="Text_1")
+                text_1_text = text_1_div.get_text(strip=True) if text_1_div else "None"
 
-            # Find the Text_4 (Additional Information/Дополнительная информация)
-            text_4_div = None
-            keywords = ['страна', 'производитель', 'изготовитель', 'происхождение', 'адрес']
+                # Find the Text_4 (Additional Information/Дополнительная информация)
+                text_4_div = None
+                keywords = ['страна', 'производитель', 'изготовитель', 'происхождение', 'адрес']
 
-            for value in ["Text_4", "Text_3", "Text_2"]:
-                div = soup.find('div', value=value)
-                if div and any(keyword in div.get_text(strip=True).lower() for keyword in keywords):
-                    text_4_div = div
-                    break
+                for value in ["Text_4", "Text_3", "Text_2"]:
+                    div = soup.find('div', value=value)
+                    if div and any(keyword in div.get_text(strip=True).lower() for keyword in keywords):
+                        text_4_div = div
+                        break
 
-            text_4_text = text_4_div.get_text(strip=True) if text_4_div else "None"
+                text_4_text = text_4_div.get_text(strip=True) if text_4_div else "None"
 
-            return [url, description_text, text_1_text, text_4_text]
-        else:
-            print(f"Failed to retrieve the webpage at {url}. Status code: {response.status_code}")
-            return [url, "Failed to retrieve", "Failed to retrieve", "Failed to retrieve"]
+                return [url, description_text, text_1_text, text_4_text]
+
+            except requests.exceptions.RequestException as e:
+                print(f"Attempt {attempt + 1} failed for {url}: {e}")
+                if attempt < retries - 1:
+                    print(f"Retrying in {delay} second...")
+                    time.sleep(delay)
+                else:
+                    print(f"Failed to retrieve the webpage at {url} after {retries} attempts.")
+                    return [url, "Failed to retrieve", "Failed to retrieve", "Failed to retrieve"]
 
     def write_output(self, data):
         """Write the scraped data to the output CSV file."""
