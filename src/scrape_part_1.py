@@ -6,7 +6,21 @@ import requests
 
 
 class ProductScraper_part_1:
+    """
+    A class to scrape product data from a website across multiple pages and save the results to a CSV file.
+    """
+
     def __init__(self, base_url, query_params, headers, output_dir, output_file_name):
+        """
+        Initialize the ProductScraper_part_1 with necessary parameters.
+
+        Parameters:
+        base_url (str): The base URL of the website to scrape.
+        query_params (dict): The query parameters to append to the URL for each request.
+        headers (dict): The headers to include in the request, such as User-Agent.
+        output_dir (str): The directory where the output CSV file will be saved.
+        output_file_name (str): The name of the output CSV file.
+        """
         self.base_url = base_url
         self.query_params = query_params
         self.headers = headers
@@ -19,7 +33,15 @@ class ProductScraper_part_1:
         os.makedirs(self.output_dir, exist_ok=True)
 
     def fetch_page(self, page_number):
-        """Fetch the data from a single page."""
+        """
+        Fetch the data from a single page by making an HTTP GET request.
+
+        Parameters:
+        page_number (int): The page number to retrieve.
+
+        Returns:
+        list: A list of products from the retrieved page.
+        """
         self.query_params["pageNumber"] = page_number
         encoded_params = urllib.parse.urlencode(self.query_params, doseq=True)
         full_url = f"{self.base_url}?{encoded_params}"
@@ -30,7 +52,16 @@ class ProductScraper_part_1:
         return response.json().get('data', {}).get('products', [])
 
     def process_product(self, product):
-        """Process a single product and return a dictionary of its data."""
+        """
+        Process a single product and return a dictionary of its data.
+
+        Parameters:
+        product (dict): A dictionary representing a single product's data.
+
+        Returns:
+        dict or None: A dictionary containing the product's URL, name, price, and rating,
+                      or None if the product has already been processed.
+        """
         item_id = product.get('itemId')
         if item_id in self.seen_item_ids:
             return None
@@ -54,7 +85,12 @@ class ProductScraper_part_1:
         }
 
     def save_to_csv(self, products_data):
-        """Save a list of product data dictionaries to a CSV file."""
+        """
+        Save a list of product data dictionaries to a CSV file.
+
+        Parameters:
+        products_data (list): A list of dictionaries representing the product data.
+        """
         with open(self.output_file_path, mode='w', newline='', encoding='utf-8') as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=self.fieldnames)
             writer.writeheader()
@@ -63,7 +99,13 @@ class ProductScraper_part_1:
                     writer.writerow(product_data)
 
     def scrape(self, start_page=1, end_page=505):
-        """Main method to scrape the products across multiple pages."""
+        """
+        Main method to scrape the products across multiple pages and save the results.
+
+        Parameters:
+        start_page (int): The starting page number (default is 1).
+        end_page (int): The ending page number (default is 505).
+        """
         all_products_data = []
 
         for page_number in range(start_page, end_page + 1):
