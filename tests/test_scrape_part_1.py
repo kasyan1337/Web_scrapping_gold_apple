@@ -1,3 +1,7 @@
+import csv
+import json
+import os
+
 import pytest
 
 from src.scrape_part_1 import ProductScraper_part_1
@@ -44,10 +48,83 @@ def setup_test_environment():
 
 
 def test_fetch_page(setup_test_environment):
-    base_url, query_params, headers, data_dir, part1_filename = setup_test_environment
-    scraper = ProductScraper_part_1(
-        base_url, query_params, headers, data_dir, part1_filename
-    )
+    products = setup_test_environment.fetch_page(1)
+    assert isinstance(products, list), "Fetched data should be a list"
+    assert "itemId" in products[0], "Product data should contain 'itemId'"
 
-    products = scraper.fetch_page(1)
-    assert isinstance(products, list)
+
+def test_process_product(setup_test_environment):
+    with open("./mock_data/product_1.json") as f:
+        product = json.load(f)
+    processed_product = setup_test_environment.process_product(product)
+    assert processed_product is not None, "Processed product should not be None"
+    assert (
+        "Product URL" in processed_product
+    ), "Processed product should contain 'Product URL'"
+    assert (
+        "Product Name" in processed_product
+    ), "Processed product should contain 'Product Name'"
+    assert (
+        "Price (RUB)" in processed_product
+    ), "Processed product should contain 'Price (RUB)'"
+    assert "Rating" in processed_product, "Processed product should contain 'Rating'"
+
+
+def test_save_to_csv(setup_test_environment):
+    scraper = setup_test_environment
+
+    with open("./mock_data/page_1.json") as f:
+        page_data = json.load(f)
+
+    # Extract the list of products from the page data
+    products = page_data["data"]["products"]
+
+    # Extract the 4 fields needed for the CSV
+    extracted_data = []
+    for product in products:
+        product_info = {
+            "Product URL": f"https://goldapple.ru{product['url']}",
+            "Product Name": f"{product.get('brand', 'Unknown Brand')}: {product.get('name', 'Unknown Name')}",
+            "Price (RUB)": product["price"]["actual"]["amount"],
+            # Using .get() to avoid KeyError if 'reviews' is not there
+            "Rating": product.get("reviews", {}).get("rating", "None"),
+        }
+        extracted_data.append(product_info)
+
+    # Pass the extracted data to save_to_csv
+    scraper.save_to_csv(extracted_data)
+
+    assert os.path.exists(scraper.output_file_path), "CSV file should be created"
+
+    with open(scraper.output_file_path, mode="r", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+        rows = list(reader)
+        assert len(rows) == 24, "Should be 24 products on the page"
+
+
+def test_scrape(monkeypatch, setup_test_environment):
+    scraper = setup_test_environment
+
+    def mock_fetch_page(page_number):
+        page_number = 1
+        return [
+            {
+                "url": f"/19000125769",
+                "brand": "BASTILLE",
+                "name": f"Demain Promis",
+                "price": {"actual": {"amount": 1000}},
+                "reviews": {"rating": 5},
+            }
+        ]
+
+    def mock_save_to_csv(data):
+        assert len(data) == 1
+        assert data[0]["Product Name"] == "BASTILLE: Demain Promis"
+        assert data[0]["Product URL"] == "https://goldapple.ru/19000125769"
+        assert data[0]["Price (RUB)"] == 1000
+        assert data[0]["Rating"] == 5
+
+    monkeypatch.setattr(scraper, "fetch_page", mock_fetch_page)
+    monkeypatch.setattr(scraper, "save_to_csv", mock_save_to_csv)
+
+    scraper.scrape(1, 1)

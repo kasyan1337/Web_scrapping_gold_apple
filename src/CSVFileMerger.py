@@ -109,7 +109,7 @@ class CSVFileMerger:
         for row in merged_data:
             product_url = row["Product URL"]
             if product_url not in self.part2_data:
-                print(f"Warning: {product_url} not found in PART_2_test.csv")
+                print(f"Warning: {product_url} not found in {self.part2_path}")
 
     def execute(self):
         """
