@@ -59,13 +59,13 @@ def test_process_product(setup_test_environment):
     processed_product = setup_test_environment.process_product(product)
     assert processed_product is not None, "Processed product should not be None"
     assert (
-            "Product URL" in processed_product
+        "Product URL" in processed_product
     ), "Processed product should contain 'Product URL'"
     assert (
-            "Product Name" in processed_product
+        "Product Name" in processed_product
     ), "Processed product should contain 'Product Name'"
     assert (
-            "Price (RUB)" in processed_product
+        "Price (RUB)" in processed_product
     ), "Processed product should contain 'Price (RUB)'"
     assert "Rating" in processed_product, "Processed product should contain 'Rating'"
 
@@ -107,13 +107,15 @@ def test_scrape(monkeypatch, setup_test_environment):
 
     def mock_fetch_page(page_number):
         page_number = 1
-        return [{
-            "url": f"/19000125769",
-            "brand": "BASTILLE",
-            "name": f"Demain Promis",
-            "price": {"actual": {"amount": 1000}},
-            "reviews": {"rating": 5}
-        }]
+        return [
+            {
+                "url": f"/19000125769",
+                "brand": "BASTILLE",
+                "name": f"Demain Promis",
+                "price": {"actual": {"amount": 1000}},
+                "reviews": {"rating": 5},
+            }
+        ]
 
     def mock_save_to_csv(data):
         assert len(data) == 1
