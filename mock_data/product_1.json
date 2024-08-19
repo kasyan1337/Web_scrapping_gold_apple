@@ -1,0 +1,175 @@
+{
+    "data": {
+        "marketingProducts": [],
+        "filters": [],
+        "url": "/parfjumerija",
+        "count": 12095,
+        "countSelectedFilters": 0,
+        "products": [
+            {
+                "price": {
+                    "regular": {
+                        "amount": 8720,
+                        "currency": "RUB",
+                        "denominator": 1
+                    },
+                    "discount": {
+                        "amount": 6540,
+                        "currency": "RUB",
+                        "denominator": 1
+                    },
+                    "viewOptions": {
+                        "priceFrom": false,
+                        "crossPrice": true,
+                        "useDiscount": true,
+                        "discountPercent": 25
+                    },
+                    "old": {
+                        "currency": "RUB",
+                        "amount": 8720,
+                        "denominator": 1
+                    },
+                    "actual": {
+                        "currency": "RUB",
+                        "amount": 6540,
+                        "denominator": 1
+                    },
+                    "hasLoyalty": false
+                },
+                "itemId": "19000125769",
+                "mainVariantItemId": "19000150172",
+                "name": "Demain Promis",
+                "productType": "Парфюмерная вода",
+                "type": "Product",
+                "brand": "BASTILLE",
+                "imageUrls": [
+                    {
+                        "url": "https://pcdn.goldapple.ru/p/p/19000125769/web/696d674d61696e8dc83f0b97eba7f${screen}.${format}",
+                        "format": [
+                            "webp",
+                            "jpg"
+                        ],
+                        "screen": [
+                            "fullhd"
+                        ]
+                    },
+                    {
+                        "url": "https://pcdn.goldapple.ru/p/p/19000125769/web/696d67416464318dc83f0b989d60c${screen}.${format}",
+                        "format": [
+                            "webp",
+                            "jpg"
+                        ],
+                        "screen": [
+                            "fullhd"
+                        ]
+                    },
+                    {
+                        "url": "https://pcdn.goldapple.ru/p/p/19000125769/web/696d67416464328dc83f0b9826601${screen}.${format}",
+                        "format": [
+                            "webp",
+                            "jpg"
+                        ],
+                        "screen": [
+                            "fullhd"
+                        ]
+                    },
+                    {
+                        "url": "https://pcdn.goldapple.ru/p/p/19000125769/web/696d67416464338dc83f0b986bf86${screen}.${format}",
+                        "format": [
+                            "webp",
+                            "jpg"
+                        ],
+                        "screen": [
+                            "fullhd"
+                        ]
+                    }
+                ],
+                "favourite": false,
+                "attributes": {
+                    "units": {
+                        "count": 2,
+                        "values": [
+                            "50",
+                            "100"
+                        ],
+                        "currentUnitValue": "50",
+                        "name": "мл"
+                    },
+                    "colors": {
+                        "count": 0,
+                        "values": [],
+                        "name": ""
+                    }
+                },
+                "labels": [
+                    {
+                        "id": "discount",
+                        "group": "standard",
+                        "backgroundColor": "#FF007E",
+                        "text": "25%",
+                        "textColor": "#FFFFFF",
+                        "textGravity": [
+                            "bottom",
+                            "middle"
+                        ]
+                    },
+                    {
+                        "id": "exclusive",
+                        "group": "standard",
+                        "resource": {
+                            "resourceUrl": {
+                                "url": "https://pcdn.goldapple.ru/p/sl/5374616e646172645f6578636c7573697665/6c6162656c3634643635626533383633393863663730326431376330618db9a848bfd71f5.png",
+                                "format": [],
+                                "screen": []
+                            },
+                            "resourceType": "image"
+                        }
+                    }
+                ],
+                "isAdult": false,
+                "inStock": true,
+                "url": "/19000125769-demain-promis",
+                "configurable": true,
+                "needOnlineConsultation": false,
+                "disclaimer": {
+                    "legalEntity": [
+                        "ООО Екатеринбург Яблоко ИНН 6670381056"
+                    ],
+                    "erid": "2VSb5xLNbZa",
+                    "label": "black"
+                },
+                "reviews": {
+                    "rating": 5,
+                    "reviewsCount": 4
+                }
+            },
+          {
+            "price": {
+              "regular": {
+                "amount": 20000,
+                "currency": "RUB",
+                "denominator": 1
+              },
+              "loyalty": {
+                "amount": 17000,
+                "currency": "RUB",
+                "denominator": 1
+              },
+              "viewOptions": {
+                "priceFrom": true,
+                "crossPrice": false,
+                "useDiscount": false,
+                "discountPercent": 15
+              },
+              "old": null,
+              "actual": {
+                "currency": "RUB",
+                "amount": 17000,
+                "denominator": 1
+              },
+              "hasLoyalty": true
+            }
+          }
+        ]
+    }
+}

@@ -146,8 +146,6 @@ venv.bak/
 dmypy.json
 
 test.py
-*.json
-*.xls;xlsx;csv
 
 # Pyre type checker
 .pyre/
